@@ -27,7 +27,7 @@ export const createResource = async (req: Request, res: Response) => {
 export const listResources = async (req: Request, res: Response) => {
   try {
     const filters: any = {};
-    const { query, priority, isActive } = req.query;
+    let { query, priority, isActive, page = 0, limit = 10 } = req.query;
 
     if (query) {
       const regex = new RegExp(query.toString(), "g");
@@ -49,7 +49,24 @@ export const listResources = async (req: Request, res: Response) => {
       filters.isActive = isActive;
     }
 
-    const resources = await Resource.find(filters);
+    page = parseInt(page.toString());
+
+    if (page < 0) {
+      return res.status(400).json({ error: "Invalid page value" });
+    }
+
+    limit = parseInt(limit.toString());
+
+    if (limit < 0) {
+      return res.status(400).json({ error: "Invalid limit value" });
+    }
+
+    const resources = await Resource.find(filters)
+      .sort({ _id: -1 })
+      .skip(page * limit)
+      .limit(limit)
+      .lean();
+
     return res.status(200).json(resources);
   } catch (error) {
     return res.status(500).json({ error: (error as Error).message });
@@ -58,7 +75,7 @@ export const listResources = async (req: Request, res: Response) => {
 
 export const getResource = async (req: Request, res: Response) => {
   try {
-    const resource = await Resource.findById(req.params.id);
+    const resource = await Resource.findById(req.params.id).lean();
     if (resource) {
       return res.status(200).json(resource);
     } else {
