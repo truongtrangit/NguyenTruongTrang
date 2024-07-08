@@ -4,16 +4,23 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "challenge3": "nodemon challenge/challenge3.ts"
+    "challenge3": "nodemon challenge/challenge3.ts",
+    "challenge4": "dotenv -e ./challenge/challenge4/.env ts-node ./challenge/challenge4/index.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@types/express": "^4.17.21",
+    "dotenv-cli": "^7.4.2",
     "nodemon": "^3.1.4"
   },
   "dependencies": {
+    "body-parser": "^1.20.2",
+    "express": "^4.19.2",
+    "joi": "^17.13.3",
+    "mongoose": "^8.4.5",
     "ts-node": "^10.9.2"
   }
 }
